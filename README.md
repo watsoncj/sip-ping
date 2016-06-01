@@ -21,8 +21,3 @@ building
 Uses docker for isolated/repeatable binary builds.
 
     ./build.sh
-
-todo
-----
-
-- Support SIP TCP transport.
