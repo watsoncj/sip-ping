@@ -9,10 +9,13 @@ import (
   "strings"
   "strconv"
   "time"
+  "crypto/tls"
   mathrand "math/rand"
 
   "github.com/gorilla/websocket"
 )
+var addr = flag.String("addr", "localhost:8080", "http service address")
+var skipVerify = flag.Bool("skipverify", false, "skip TLS certificate verification")
 
 const OPTIONS = `OPTIONS sip:monitor@none SIP/2.0
 Via: SIP/2.0/WSS 81okseq92jb7.invalid;branch=z9hG4bK5964427
@@ -23,13 +26,6 @@ CSeq: {{seq}} OPTIONS
 Content-Length: 0
 
 ` // two newlines required to signal end of request
-
-var sipDialer = websocket.Dialer{
-  Subprotocols:    []string{"sip"},
-  ReadBufferSize:  1024,
-  WriteBufferSize: 1024,
-}
-var addr = flag.String("addr", "localhost:8080", "http service address")
 
 func randString(n int) string {
     const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -44,6 +40,14 @@ func randString(n int) string {
 func main() {
   flag.Parse()
   log.SetFlags(0)
+
+  var tlsClientConfig = &tls.Config{InsecureSkipVerify: *skipVerify}
+  var sipDialer = websocket.Dialer{
+    Subprotocols:    []string{"sip"},
+    ReadBufferSize:  1024,
+    WriteBufferSize: 1024,
+    TLSClientConfig: tlsClientConfig,
+  }
 
   interrupt := make(chan os.Signal, 1)
   signal.Notify(interrupt, os.Interrupt)
