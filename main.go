@@ -106,7 +106,7 @@ func main() {
           os.Exit(1)
           return
         }
-        log.Printf("recv: %s", message)
+        log.Printf("%s", message)
         if (strings.Contains(string(message), "SIP/2.0 200 OK")) {
           os.Exit(0)
         } else {
