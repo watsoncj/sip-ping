@@ -8,6 +8,13 @@ example
 
     sip-ping -addr wss://my-server
 
+install
+-------
+
+Assuming you have [setup Go](https://golang.org/doc/install):
+
+    go get github.com/watsoncj/sip-ping
+
 building
 --------
 
