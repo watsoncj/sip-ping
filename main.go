@@ -14,7 +14,7 @@ import (
 
   "github.com/gorilla/websocket"
 )
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var addr = flag.String("addr", "", "http service address")
 var skipVerify = flag.Bool("skipverify", false, "skip TLS certificate verification")
 
 const OPTIONS = `OPTIONS sip:monitor@none SIP/2.0
@@ -40,6 +40,11 @@ func randString(n int) string {
 func main() {
   flag.Parse()
   log.SetFlags(0)
+
+  if (len(*addr)==0) {
+    flag.Usage()
+    os.Exit(255)
+  }
 
   var tlsClientConfig = &tls.Config{InsecureSkipVerify: *skipVerify}
   var sipDialer = websocket.Dialer{
